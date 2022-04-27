@@ -9,7 +9,7 @@ my JavaScript skills and to apply knowledge I have learned. The game is played i
 browser and is currently text-only. I plan to make this game with HTML/CSS later on, sorta like how those old
 flash games on Miniclip used to be.
 
-My email is damir.golami@gmail.com. Please let me know what you think about my code.
+Please let me know what you think about my code.
 I know that some of my code may not be the most efficient or easiest to follow at times, but I am always
 learning and trying to improve myself or my code in any way possible.
 */
