@@ -3,13 +3,20 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CARD GAMES</title>
+    <title>Console Poker</title>
     <script src="poker.js"></script>
     <link rel="icon" type="image/x-icon" href="flankicon.ico"</link>
 </head>
 <body>
-<h1 style="font-size: 72">issues encountered:</h1>
-<h2 style="font-family: 'Courier New', Courier, monospace">
+<h1 style="font-size: 30">
+    Hello and welcome to poker by Damir! 
+    Hopefully by the time you are reading this,
+    the game will be fully functional and not able to be broken.
+
+    <br>
+    <br>Issues encountered:
+</h1>
+<h4 style="font-family: 'Courier New', Courier, monospace">
     issue: deck was not shuffling with function being called properly
     <br>
     fix: changed ">" to "<"  in "for(i = 0; i < 999; i++)" shuffle function
@@ -27,12 +34,7 @@
     <br>
     issue: chips added to pot are added as strings, not values
     <br>
-    fix: added "+" infront of chipsPot and bet to convert string to a number
-    <br>
-    <br>
-    issue: callBet() function not functioning, bet prompt when empty returns improperly
-    <br>
-    fix: used "===" instead of "==" in "if" statement
+    fix: converted chips string to a number
     <br>
     <br>
     issue: opponent bets an undefined number of chips, chipsPot becomes NaN
@@ -40,9 +42,9 @@
     fix: let opponents bet be an empty string instead of undefined
     <br>
     <br>
-    issue: unexpected end of input from hell
+    issue: unexpected end of input from hell 
     <br>
-    fix: closed all statements properly
+    fix: closed all curly brace statements, but with feeling
     <br>
     <br>
     issue: could not access 'numberOfBurnedCards' before initialization
@@ -50,14 +52,34 @@
     fix: moved initialization of variables outside function
     <br>
     <br>
-    issue: log says opponent only draws 1 card, usedCards array has more than 1 card drawn
-    <br>
-    fix: changed = to == in "if" statement for "numberOfBurnedCards"
-    <br>
-    <br>
     issue: the "you draw x cards" log always appears, even when drawing no cards
     <br>
-    fix: nested drawing cards statements within a different else loop
+    fix: nested drawing cards statements within a different else loop block
+    <br>
+    <br>
+    issue: being able to bet characters, making player and pot chipcounts NaN
+    <br>
+    fix: added isNaN() to if statement
+    <br>
+    <br>
+    issue: raising opponent would cause opponent to loop betting 100 chips
+    <br>
+    fix: moved break statement to outside if statement block
+    <br>
+    <br>
+    issue: opponent always bets, even if a prompt is entered incorrectly
+    <br>
+    fix: removed break statement from within if statement block
+    <br>
+    <br>
+    issue: raising or matching the opponent skips the player discard phase
+    <br>
+    fix: changed gameState value in raise and match statements from 3 to 2
+    <br>
+    <br>
+    issue: could not discard face cards after fixing discard hand logic
+    <br>
+    fix: discardYourHand function now only checks the first index of Suit names
 </h2>
 </body>
 </html>
