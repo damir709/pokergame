@@ -1,20 +1,17 @@
 /*
+
+THIS GAME IS CURRENTLY NOT FINISHED
+
+To do: Add logic for determining the value of each poker hand
+
 Hello there and welcome to my poker game! This is my first hobby project I am developing on my own time to sharpen
 my JavaScript skills and to apply knowledge I have learned. The game is played in the console of a web
 browser and is currently text-only. I plan to make this game with HTML/CSS later on, sorta like how those old
 flash games on Miniclip used to be.
 
-Geez, I poured hours and hours into that site. Surely you remember flash game sites like Miniclip?
-What about AddictingGames? "Free Flash and Java games!" was their slogan.
-Ringing any bells? Yes? No? Maybe? Maybe you were more of a CS 1.6 kinda person. Respect if you are...
-That game came out way back in 2003, and honestly it doesn't feel like it's been 19 years since then.
-
-Do you feel old yet? I certainly do. AAAAAANYWAYS...
-
 My email is damir.golami@gmail.com. Please let me know what you think about my code.
 I know that some of my code may not be the most efficient or easiest to follow at times, but I am always
 learning and trying to improve myself or my code in any way possible.
-If you are from a software company and this code is up to your standards, you should consider hiring me. 
 */
 
 var pokerHands = { // Object for values of the hands
@@ -85,7 +82,6 @@ function dealOpponentHand(deck) { // Function to deal a card to opponentHand
 function placeYourBet() { // Function to bet chips
    var bet = prompt("Enter your bet:");
    bet = +bet;
-   //console.log(typeof(bet));
     if(bet > yourChips) { // Player cannot bet more chips than they have
         alert('Sorry, you do not have enough chips for this bet.');
         placeYourBet();
@@ -234,7 +230,6 @@ function discardYourHand() { // Function to discard cards
             cardValue = +cardValue;
             var cardIndex = yourHand.findIndex(element => (element.Value === cardValue && element.Suit === cardSuit)); // Find the index of the selected card
             usedCards = usedCards.concat(yourHand.splice(cardIndex, 1)); // Concat the card at that index to the used or trash cards pile
-            console.log('gameState ' + gameState);
             gameState = 3;
             numberOfBurnedCards = numberOfBurnedCards - 1;
         }
@@ -243,14 +238,14 @@ function discardYourHand() { // Function to discard cards
     }
 }
 
-for(gameState; gameState < 6 ;) { // Switch statement to determine game state, any state more than the
-    if(yourChips < 0) {           // total number of states ends the game, should only happen on win or loss
-        alert('You have lost all your chips. Game over!');
-        gameState = 99; // Make the player lose if they run out of chips
+for(gameState; gameState < 6 ;) { // Switch statement to determine game state, any state more than the total number of states ends the game, should only happen on win or loss
+    if(yourChips < 0) {          
+        alert('You have lost all your chips. Game over!'); // Make the player lose if they run out of chips
+        gameState = 99; 
     }
     if(opponentChips < 0) {
-        alert('Your opponent has lost all their chips. You win!');
-        gameState = 99; // Make the opponent lose if they run out of chips
+        alert('Your opponent has lost all their chips. You win!'); // Make the opponent lose if they run out of chips
+        gameState = 99; 
     }
 switch(gameState) {
     case -1: // Welcome screen state
@@ -471,8 +466,14 @@ switch(gameState) {
         }
     }
     break;
-    
-    case 5: // Determine the value of the hands, whichever value is higher wins
+        
+    /* As of right now, this is where the game ends, the only thing left to do is adding the logic for each poker hand.
+    If I was going to redo this project, I would make use of objects more as dealing with arrays and strings is a PAIN.
+    */
+        
+        
+        
+    case 5: // Determine the value of the hands, whichever value is higher wins the hand
     var firstSuit = yourHand[0].Suit;
     var isFlush = (yourHand) => yourHand.Suit == firstSuit;
     if (yourHand.every(isFlush) === true) {
@@ -480,16 +481,7 @@ switch(gameState) {
         console.log('You have a flush.');
         console.log(yourHand.every(isFlush));
     }
-    
-        
-
     gameState = 99;
     break;    
     } // Should be 2 curly braces here
 }
-
-
-//console.log(yourHand);
-//console.log(opponentHand);
-//console.log(deck);
-//console.log(usedCards);
