@@ -251,7 +251,6 @@ switch(gameState) {
     case -1: // Welcome screen state
        var startPrompt = prompt('Welcome to Console Poker! Please press enter to begin! You will be dealt 5 cards. Enter anything else to abort.');
         if(startPrompt === '') { // Not pressing enter on the welcome screen aborts the game
-            console.log('gameState ' + gameState);
             gameState = 0;
         }
         else {
@@ -269,7 +268,6 @@ switch(gameState) {
         }
         displayYourHand();
         sortHands();
-        console.log('gameState ' + gameState);
         alert('You have been dealt 5 cards.');
         gameState = 1;
     break;
@@ -306,7 +304,6 @@ switch(gameState) {
                         console.log('Opponent has matched you by betting' + ' ' + recentBet + ' chips.');
                         console.log('Opponent now has ' + opponentChips + ' chips.');
                         console.log('The pot is now ' + chipsPot + ' chips.');
-                        console.log('gameState ' + gameState);
                     }
                     gameState = 2;
                     break;
@@ -345,7 +342,6 @@ switch(gameState) {
         if(numberOfBurnedCards == 0 || '') { // If the player discards no cards, continue
             alert('You discard no cards.');
             console.log('You draw no cards.');
-            console.log('gameState ' + gameState);
             gameState = 3;
             break;
         }
