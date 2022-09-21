@@ -1,41 +1,27 @@
-/*
-
-THIS GAME IS CURRENTLY NOT FINISHED
-
-To do: Add logic for determining the value of each poker hand
-
-Hello there and welcome to my poker game! This is my first hobby project I am developing on my own time to sharpen
-my JavaScript skills and to apply knowledge I have learned. The game is played in the console of a web
-browser and is currently text-only. I plan to make this game with HTML/CSS later on, sorta like how those old
-flash games on Miniclip used to be.
-
-Please let me know what you think about my code.
-I know that some of my code may not be the most efficient or easiest to follow at times, but I am always
-learning and trying to improve myself or my code in any way possible.
-*/
 
 var pokerHands = { // Object for values of the hands
-    highcard: 1,
-    pair: 2,
-    twopair: 3,
-    threeofkind: 4,
+    highcard: 1, // Done
+    pair: 2,   // Done
+    twopair: 3, // Done
+    threeofkind: 4, // Done
     straight: 5,
-    flush: 6,
+    flush: 6, // Done
     fullhouse: 7,
-    fourofkind: 8,
+    fourofkind: 8, // Done
     straightflush: 9,
-    royalflush: 10,
+    royalflush: 10, // Done
 };
+
 var suits = ['Spades', 'Clubs', 'Diamonds', 'Hearts']; // Create suits of cards
-var values = [2, 3, 4, 5, 6, 7, 8, 9, 10, 'Jack', 'Queen', 'King', 'Ace',]; // Create values of cards
+var values = [2, 3, 4, 5, 6, 7, 8, 9, 10, 'Jack', 'Queen', 'King', 'Ace']; // Create values of cards
 var deck = []; // Make the deck an array
 var yourHand = []; // Start with no cards
 var opponentHand = []; // Opponent starts with no cards
-var usedCards = []; // Cards that are burned or discarded go here
+var usedCards = []; // Cards that are "burned" or discarded go here
 var yourHandValue = 0; // Variables to determine who has the better hand
 var opponentHandValue = 0;
-var yourChips = 1000; // player and opponent start with 1000 chips
-var opponentChips = 1000;
+var yourChips = 2000; // player and opponent start with 1000 chips
+var opponentChips = 2000;
 var sameValueCards = 0;
 var chipsPot = 0; //  Pot starts at nothing
 var opponentBet; 
@@ -82,6 +68,7 @@ function dealOpponentHand(deck) { // Function to deal a card to opponentHand
 function placeYourBet() { // Function to bet chips
    var bet = prompt("Enter your bet:");
    bet = +bet;
+   //console.log(typeof(bet));
     if(bet > yourChips) { // Player cannot bet more chips than they have
         alert('Sorry, you do not have enough chips for this bet.');
         placeYourBet();
@@ -109,8 +96,23 @@ function placeYourBet() { // Function to bet chips
 
 function placeOpponentBet() { // Function to make the opponent bet chips, A.I will be added later
     console.log('Opponent has ' + opponentChips + ' chips.');
-    if (opponentChips > 1000) {
-        opponentBet = 200;
+    if (opponentChips > 1400) {
+        var opponentBrain = Math.floor(Math.random() * 10);
+        if (opponentBrain >= 7) {
+            opponentBet = 250;
+        }
+        else if (opponentBrain == 6) {
+            opponentBet = 300;
+        }
+        else if (opponentBrain == 5 || 4) {
+            opponentBet = Math.floor((yourChips / 4));
+        }
+        else {
+            opponentBet = 150;
+        }
+    }
+    else if (opponentChips < 500) {
+        opponentBet = 50;
     }
     else {
         opponentBet = 100;
@@ -147,11 +149,12 @@ function resetGame() { // resets the game, adds all cards back to deck
     console.log(opponentHand);
     console.log(usedCards);
     console.log(deck);
+    recentBet = 0;
+    yourRecentBet = 0;
+    opponentBet = 0;
 }
 
 function youFold() { // Function to fold
-    console.log('You fold.');
-    alert('You fold.');
     deck = deck.concat(yourHand.splice(0, yourHand.length)); // Concat ALL cards back to the deck
     deck = deck.concat(opponentHand.splice(0, opponentHand.length));
     deck = deck.concat(usedCards);
@@ -160,14 +163,10 @@ function youFold() { // Function to fold
     yourChips = yourChips - recentBet;
     chipsPot = 0;
     gameState = 0;
-    //console.log(yourHand); 
-    //console.log(opponentHand);
-    //console.log(usedCards);           // Debug stuff
-    //console.log(deck);
+  
 }
 
 function opponentFold() { // Function to make opponent fold
-    console.log('Opponent has folded.');
     deck = deck.concat(yourHand.splice(0, yourHand.length));
     deck = deck.concat(opponentHand.splice(0, opponentHand.length));
     deck = deck.concat(usedCards);
@@ -180,33 +179,26 @@ function opponentFold() { // Function to make opponent fold
     gameState = 0;
 }
 
-function sortHands() { // Sorts both the player and opponent hands by Value, shifting lower values to the start
+function sortHands() { // Sorts both the player and opponent hands by values.indexOf(), shifting lower values to the start
     yourHand.sort((a, b) => {
-        if (typeof a.Value === 'number' && typeof b.Value === 'number') { //If a and b are both numbers
-            return a.Value - b.Value; //return a - b
-        }
-        else if (typeof a.Value === 'number') {
-            return -1;
-        }
-        else if (typeof b.Value === 'number') {
+       var sortIndex = values.indexOf(a.Value);
+       if (sortIndex > values.indexOf(b.Value)) {
             return 1;
         }
         else {
-            return a.Value > b.Value ? 1 : -1; // Return 1 if true, -1 if false
+            return -1;
         }
     }
+    
     );
     opponentHand.sort((a, b) => {
-        if (typeof a.Value === 'number' && typeof b.Value === 'number') {
-            return a.Value - b.Value;
-        } else if (typeof a.Value === 'number') {
-            return -1;
-        } else if (typeof b.Value === 'number') {
+        var opponentSortIndex = values.indexOf(a.Value);
+       if (opponentSortIndex > values.indexOf(b.Value)) {
             return 1;
-        } else {
-            return a.Value > b.Value ? 1 : -1;
         }
-        
+        else {
+            return -1;
+        }
     }
     );
 }
@@ -220,9 +212,18 @@ function displayYourHand() { // Function to show the player their hand
     console.log(yourHand[3]);
     console.log(yourHand[4]);
 }
+function displayOpponentHand() { // Function to show the player the opponent's hand
+    sortHands();
+    console.log('This is your opponents hand. It has ' + opponentHand.length + ' cards in it.');
+    console.log(opponentHand[0]);
+    console.log(opponentHand[1]);
+    console.log(opponentHand[2]);
+    console.log(opponentHand[3]);
+    console.log(opponentHand[4]);
+}
 function discardYourHand() { // Function to discard cards
     displayYourHand();
-    burnedCards = prompt("Select the card(s) to be discarded. Syntax: 'Suit' of 'Value'");
+    burnedCards = prompt("Select the card(s) to be discarded. Syntax: 'Value' of 'Suit' ");
     var cardValue = burnedCards.split(' of ');
     var cardSuit = cardValue.pop();
     if (yourHand.some(yourHand => yourHand.Value == cardValue[0]) && yourHand.some(yourHand => yourHand.Suit[0] == cardSuit[0])) { 
@@ -238,14 +239,14 @@ function discardYourHand() { // Function to discard cards
     }
 }
 
-for(gameState; gameState < 6 ;) { // Switch statement to determine game state, any state more than the total number of states ends the game, should only happen on win or loss
-    if(yourChips < 0) {          
-        alert('You have lost all your chips. Game over!'); // Make the player lose if they run out of chips
-        gameState = 99; 
+for(gameState; gameState < 8 ;) { // Switch statement to determine game state, any state more than the
+    if(yourChips < 0) {           // total number of states ends the game, should only happen on win or loss
+        alert('You have lost all your chips. Game over!');
+        gameState = 99; // Make the player lose if they run out of chips
     }
     if(opponentChips < 0) {
-        alert('Your opponent has lost all their chips. You win!'); // Make the opponent lose if they run out of chips
-        gameState = 99; 
+        alert('Your opponent has lost all their chips. You win!');
+        gameState = 99; // Make the opponent lose if they run out of chips
     }
 switch(gameState) {
     case -1: // Welcome screen state
@@ -259,6 +260,7 @@ switch(gameState) {
     break;
 
     case 0: // Card dealing state
+        resetGame();
         shuffleDeck(deck); // Shuffle and deal 5 cards to both players
         while(yourHand.length < 5) {
             dealYourHand(deck);
@@ -267,7 +269,6 @@ switch(gameState) {
             dealOpponentHand(deck);
         }
         displayYourHand();
-        sortHands();
         alert('You have been dealt 5 cards.');
         gameState = 1;
     break;
@@ -276,6 +277,15 @@ switch(gameState) {
         placeOpponentBet(); // Opponent bets first
         console.log('The pot is now ' + chipsPot + ' chips.'); // Display the pot and your amount of chips
         console.log('You have ' + yourChips + ' chips.');
+        if (opponentBet > yourChips) {
+            alert('The opponent has bet more chips than you have. You must now go all in.');
+            chipsPot = chipsPot + yourChips;
+            yourChips = 0;
+            console.log('The pot is now ' + chipsPot + ' chips.');
+            console.log('You have ' + yourChips + ' chips.');
+            gameState = 5;
+            break;
+        }
         while(recentBet > yourRecentBet) { // Don't let the player proceed if their bet is less than the opponent's, they have to match or fold.
             var yourSelection = prompt('Your opponent has raised you by ' + (recentBet - yourRecentBet) + ' chip(s). Would you like to match them? Enter Yes or no.');
         if(yourSelection.toUpperCase() == 'YES') { // Automatically match the opponent's bet
@@ -285,7 +295,7 @@ switch(gameState) {
             console.log('You now have ' + yourChips + ' chips.');
             console.log('The pot is now ' + chipsPot + ' chips.');
             yourRecentBet = recentBet; // Set your bets to be equal to break the loop
-            console.log('gameState ' + gameState);
+
             gameState = 2; // Continue the game
             break;
         }
@@ -304,6 +314,7 @@ switch(gameState) {
                         console.log('Opponent has matched you by betting' + ' ' + recentBet + ' chips.');
                         console.log('Opponent now has ' + opponentChips + ' chips.');
                         console.log('The pot is now ' + chipsPot + ' chips.');
+                        console.log('gameState ' + gameState);
                     }
                     gameState = 2;
                     break;
@@ -337,11 +348,10 @@ switch(gameState) {
     case 2: // Player discard and draw state
         numberOfBurnedCards = prompt("How many cards would you like to discard? Enter 0 or leave blank to skip.");
         numberOfBurnedCards = +numberOfBurnedCards;
-        console.log(typeof(numberOfBurnedCards));
-        console.log(numberOfBurnedCards);
         if(numberOfBurnedCards == 0 || '') { // If the player discards no cards, continue
             alert('You discard no cards.');
             console.log('You draw no cards.');
+            
             gameState = 3;
             break;
         }
@@ -353,7 +363,7 @@ switch(gameState) {
                  dealYourHand(deck);
             } 
             displayYourHand();
-            console.log('gameState ' + gameState);
+            
             gameState = 3;
             break; 
         }
@@ -375,10 +385,15 @@ switch(gameState) {
         break;
 
     case 3: // Opponent discard and draw state
-        numberOfBurnedCards = Math.floor(Math.random() * 5) + 1; // opponent discards a random number of cards, FOR NOW
-        burnedCards = Math.floor(Math.random() * 5) + 1;        // A.I will be given to the opponent later
-        //console.log(burnedCards);
-        //console.log(numberOfBurnedCards);
+        
+        numberOfBurnedCards = Math.floor(Math.random() * 5) + 1; // opponent discards a random number of cards if they have no pairs
+        burnedCards = Math.floor(Math.random() * 5) + 1;
+        for (i = 1;i < 3; i++) {
+            if (opponentHand[i].Value === opponentHand[(i + 1)].Value) { // If the opponent has a pair in their hand, they will throw away other cards instead
+                var opponentDiscardIndex = opponentHand[(i - 1)].Value;
+                numberofBurnedCards = 1;
+            }
+        }        
         usedCards = usedCards.concat(opponentHand.splice(0, numberOfBurnedCards)); // Concat the card taken from opponentHand to usedCards
         
         while(opponentHand.length < 5) { // Opponent always needs 5 cards
@@ -392,7 +407,7 @@ switch(gameState) {
             console.log('Your opponent draws ' + numberOfBurnedCards + ' cards.');
             alert('Your opponent draws ' + numberOfBurnedCards + ' cards.');
         }
-        console.log('gameState ' + gameState);
+        
         console.log(usedCards);
         gameState = 4;
     break;
@@ -403,7 +418,15 @@ switch(gameState) {
     placeOpponentBet();
     console.log('The pot is now ' + chipsPot + ' chips.');
     console.log('You have ' + yourChips + ' chips.');
-    
+    if (opponentBet > yourChips) {
+        alert('The opponent has bet more chips than you have. You must now go all in.');
+        chipsPot = chipsPot + yourChips;
+        yourChips = 0;
+        console.log('The pot is now ' + chipsPot + ' chips.');
+        console.log('You have ' + yourChips + ' chips.');
+        gameState++;
+        break;
+    }
     while(recentBet > yourRecentBet) { // While your recent bet is less than the opponent's
         var yourSelection = prompt('Your opponent has raised you by ' + (recentBet - yourRecentBet) + ' chip(s). Would you like to match them? Enter Yes or no.');
         if(yourSelection.toUpperCase() == 'YES') { // Automatically match the opponent's bet if player selects "YES"
@@ -413,7 +436,6 @@ switch(gameState) {
             console.log('You now have ' + yourChips + ' chips.');
             console.log('The pot is now ' + chipsPot + ' chips.');
             yourRecentBet = recentBet;
-            console.log('gameState ' + gameState);
             gameState = 5;
             break;
         }
@@ -429,9 +451,7 @@ switch(gameState) {
                         opponentChips = opponentChips - +recentBet;
                         console.log('Opponent has matched you by betting' + ' ' + recentBet + ' chips.');
                         console.log('Opponent now has ' + opponentChips + ' chips.');
-                        console.log('The pot is now ' + chipsPot + ' chips.');
-                        console.log('gameState ' + gameState);
-                        
+                        console.log('The pot is now ' + chipsPot + ' chips.'); 
                     }
                     gameState = 5;
                         break;
@@ -462,22 +482,310 @@ switch(gameState) {
         }
     }
     break;
-        
-    /* As of right now, this is where the game ends, the only thing left to do is adding the logic for each poker hand.
-    If I was going to redo this project, I would make use of objects more as dealing with arrays and strings is a PAIN.
-    */
-        
-        
-        
-    case 5: // Determine the value of the hands, whichever value is higher wins the hand
-    var firstSuit = yourHand[0].Suit;
-    var isFlush = (yourHand) => yourHand.Suit == firstSuit;
-    if (yourHand.every(isFlush) === true) {
-        yourHandValue = pokerHands.flush;
-        console.log('You have a flush.');
-        console.log(yourHand.every(isFlush));
+    
+    case 5: // Determine the value of the player's hand
+    let testHand = [];
+    let testCard1 = {Value: 2, Suit: 'Spades'};
+    let testCard2 = {Value: 3, Suit: 'Spades'};
+    let testCard3 = {Value: 4, Suit: 'Spades'};
+    let testCard4 = {Value: 5, Suit: 'Spades'};
+    let testCard5 = {Value: 6, Suit: 'Hearts'};
+    testHand.push(testCard1);
+    testHand.push(testCard2);
+    testHand.push(testCard3);
+    testHand.push(testCard4);
+    testHand.push(testCard5);
+    testHand.sort((a, b) => {
+        if (typeof a.Value === 'number' && typeof b.Value === 'number') {
+            return a.Value - b.Value;
+        } else if (typeof a.Value === 'number') {
+            return -1;
+        } else if (typeof b.Value === 'number') {
+            return 1;
+        } else {
+            return a.Value > b.Value ? 1 : -1;
+            }
+        }
+    );
+
+    var pairCount = 0;
+    var cardSuit = yourHand[0].Suit;
+    var isFlush = (yourHand) => yourHand.Suit == cardSuit;
+    if (yourHand[0].Value == 10) {
+        if(yourHand[1].Value == 'Ace') {
+            if(yourHand[2].Value == 'Jack') {
+                if(yourHand[3].Value == 'King') {
+                    if(yourHand[4].Value == 'Queen') {
+                        if(yourHand.every(isFlush) === true) {
+                            yourHandValue = pokerHands.royalflush;
+                            console.log('You have a royal flush. What are the odds?');
+                            gameState = 6;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
     }
-    gameState = 99;
-    break;    
-    } // Should be 2 curly braces here
-}
+    // if every card in your hand is the same suit, AND if the index of the first and last cards in your hand have a difference of 4...
+    if ((yourHand.every(isFlush) === true) && (values.indexOf(yourHand[4].Value) - values.indexOf(yourHand[0].Value) == 4)) { // Straight Flush
+        yourHandValue = pokerHands.straightflush;// If every card in your hand is the same suit AND you have a straight...
+        console.log('You have a straight flush.');
+        gameState = 6;
+        break;
+    }
+    else if (values.indexOf(yourHand[4].Value) - values.indexOf(yourHand[0].Value) == 4) {
+        yourHandValue = pokerHands.straight;// If you have a straight...
+        console.log('You have a straight.');
+        gameState = 6;
+        break;
+    }
+    else if (yourHand.every(isFlush) === true) { //
+        yourHandValue = pokerHands.flush;// If every card in your hand is the same suit...
+        console.log('You have a flush.');
+        gameState = 6;
+        break;
+    }
+    else if (((yourHand[0].Value == yourHand[2].Value) && yourHand[3].Value == yourHand[4].Value) || ((yourHand[0].Value == yourHand[1].Value) && (yourHand[2].Value == yourHand[4].Value))) {
+        yourHandValue = pokerHands.fullhouse;// Full house logic, if you have a 3 of a kind and a pair...
+        console.log('You have a full house.');
+        gameState = 6;
+        break;
+    }
+    else if ((yourHand[0].Value == yourHand[3].Value) || (yourHand[1].Value == yourHand[4].Value)) {
+        yourHandValue = pokerHands.threeofkind;// If you have a 4 of a kind
+        console.log('You have a four of a kind.');
+        gameState = 6;
+        break;
+    }
+    else if ((yourHand[0].Value == yourHand[2].Value) || (yourHand[1].Value == yourHand[3].Value) || (yourHand[2].Value == yourHand[4].Value)) {
+        yourHandValue = pokerHands.threeofkind;// If you have a 3 of a kind
+        console.log('You have a three of a kind.');
+        gameState = 6;
+        break;
+    }
+   
+    for (i = 0; i <= 3; i++) { // Two pair, pair, and high card logic
+        if (yourHand[i].Value === yourHand[(i + 1)].Value) { // If the value of a card is the same for the next index...
+            pairCount = pairCount + 1;
+        }
+    }
+    if (pairCount == 2) { // If you have two pairs total...
+        yourHandValue = pokerHands.twopair;
+        console.log('You have a two pair.');
+        gameState = 6;
+        break;
+    }
+    else if (pairCount == 1) { // If you have one pair total...
+        yourHandValue = pokerHands.pair;
+        console.log('You have a pair.');
+        gameState = 6;
+        break;
+    }
+    else { // If you have no pairs and no other hands...
+        yourHandValue = pokerHands.highcard;
+        console.log('You just have a high card. Ouch.');
+        gameState = 6;
+        break;
+    }
+    break;
+
+    case 6: // Determine the value of the opponent's hand
+    displayOpponentHand();
+    var opponentPairCount = 0;
+    var opponentCardSuit = opponentHand[0].Suit;
+    var isFlush = (opponentHand) => opponentHand.Suit == opponentCardSuit;
+    if (opponentHand[0].Value == 10) {
+        if(opponentHand[1].Value == 'Ace') {
+            if(opponentHand[2].Value == 'Jack') {
+                if(opponentHand[3].Value == 'King') {
+                    if(opponentHand[4].Value == 'Queen') {
+                        if(opponentHand.every(isFlush) === true) {
+                            opponentHandValue = pokerHands.royalflush;
+                            console.log('Your opponent has a royal flush. What are the odds?');
+                            gameState = 7;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if ((opponentHand.every(isFlush) === true) && (values.indexOf(opponentHand[4].Value) - values.indexOf(opponentHand[0].Value) == 4)) { // Straight Flush
+        opponentHandValue = pokerHands.straightflush;// If every card in your hand is the same suit AND you have a straight...
+        console.log('Your opponent has a straight flush.');
+        gameState = 7;
+        break;
+    }
+    else if (values.indexOf(opponentHand[4].Value) - values.indexOf(opponentHand[0].Value) == 4) {
+        opponentHandValue = pokerHands.straight;// If you have a straight...
+        console.log('Your opponent has a straight.');
+        gameState = 7;
+        break;
+    }
+    else if (opponentHand.every(isFlush) === true) { //
+        opponentHandValue = pokerHands.flush;// If every card in your hand is the same suit...
+        console.log('Your opponent has a flush.');
+        gameState = 7;
+        break;
+    }
+    else if (((opponentHand[0].Value == opponentHand[2].Value) && opponentHand[3].Value == opponentHand[4].Value) || ((opponentHand[0].Value == opponentHand[1].Value) && (opponentHand[2].Value == opponentHand[4].Value))) {
+        opponentHandValue = pokerHands.fullhouse;// Full house logic, if you have a 3 of a kind and a pair...
+        console.log('Your opponent has a full house.');
+        gameState = 7;
+        break;
+    }
+    else if ((opponentHand[0].Value == opponentHand[3].Value) || (opponentHand[1].Value == opponentHand[4].Value)) {
+        opponentHandValue = pokerHands.threeofkind;// If you have a 4 of a kind
+        console.log('Your opponent has a four of a kind.');
+        gameState = 7;
+        break;
+    }
+    else if ((opponentHand[0].Value == opponentHand[2].Value) || (opponentHand[1].Value == opponentHand[3].Value) || (opponentHand[2].Value == opponentHand[4].Value)) {
+        opponentHandValue = pokerHands.threeofkind;// If you have a 3 of a kind
+        console.log('Your opponent has a three of a kind.');
+        gameState = 7;
+        break;
+    }
+   
+    for (i = 0; i <= 3; i++) { // Two pair, pair, and high card logic
+        if (opponentHand[i].Value === opponentHand[(i + 1)].Value) { // If the value of a card is the same for the next index...
+            opponentPairCount = opponentPairCount + 1;
+        }
+    }
+    if (opponentPairCount == 2) { // If you have two pairs total...
+        opponentHandValue = pokerHands.twopair;
+        console.log('Your opponent has a two pair.');
+        gameState = 7;
+        break;
+    }
+    else if (opponentPairCount == 1) { // If you have one pair total...
+        opponentHandValue = pokerHands.pair;
+        console.log('Your opponent has a pair.');
+        gameState = 7;
+        break;
+    }
+    else { // If you have no pairs and no other hands...
+        opponentHandValue = pokerHands.highcard;
+        console.log('Your opponent just has a high card.');
+        gameState = 7;
+        break;
+    }
+    case 7: // Player and opponent hand value comparison
+    yourHand.sort();
+    console.log(yourHand);
+        if (yourHandValue > opponentHandValue) {
+            opponentFold();
+            alert('You have won the hand.');
+            gameState = 0;
+            break;
+        }
+        else if (yourHandValue < opponentHandValue) {
+            youFold();
+            alert('The opponent has won the hand.');
+            gameState = 0;
+            break;
+        }
+        else if (yourHandValue == opponentHandValue) { // If both the player and opponent have the same hand, it goes to high cards
+            switch(pokerHands) {
+                case pokerHands.straightflush:
+                case pokerHands.flush:
+                case pokerHands.straight:
+                    if ((values.indexOf(yourHand[4].Value)) > (values.indexOf(opponentHand[4].Value))) {
+                        opponentFold();
+                        alert('You have won the hand by high card.');
+                        gameState = 0;
+                        break;
+                    }
+                    else {
+                        youFold();
+                        alert('The opponent has won the hand by high card.');
+                        gameState = 0;
+                        break;
+                    }
+                case pokerHands.fourofkind:
+                case pokerHands.fullhouse:
+                case pokerHands.threeofkind:
+                    if ((values.indexOf(yourHand[2].Value)) > (values.indexOf(opponentHand[2].Value))) {
+                        opponentFold();
+                        alert('You have won the hand by high card.');
+                        gameState = 0;
+                        break;
+                    }
+                    else {
+                        youFold();
+                        alert('The opponent has won the hand by high card.');
+                        gameState = 0;
+                        break;
+                    }
+                }
+            }
+                case pokerHands.twopair:
+                case pokerHands.pair:
+                    var pairIndex;
+                    var opponentPairIndex;
+                    for (i = 0; i < 4; i++) {
+                        if (yourHand[i].Value === yourHand[(i + 1)].Value) {
+                            pairIndex = yourHand[i].Value;
+                        }
+                        if (opponentHand[i].Value === opponentHand[(i + 1)].Value) {
+                            opponentPairIndex = opponentHand[i].Value;
+                        }
+                    }
+                    if ((values.indexOf(pairIndex)) > (values.indexOf(opponentPairIndex))) {
+                        opponentFold();
+                        alert('You have won the hand by high card.');
+                        gameState = 0;
+                        break;
+                    }
+                    else {
+                        youFold();
+                        alert('The opponent has won the hand by high card.');
+                        gameState = 0;
+                        break;
+                    }
+                case pokerHands.highcard:
+                    if ((values.indexOf(yourHand[4].Value)) > (values.indexOf(opponentHand[4].Value))) {
+                        opponentFold();
+                        alert('You have won the hand by high card.');
+                        gameState = 0;
+                        break;
+                    }
+                    else if ((values.indexOf(yourHand[3].Value)) > (values.indexOf(opponentHand[3].Value))) {
+                        opponentFold();
+                        alert('You have won the hand by high card.');
+                        gameState = 0;
+                        break;
+                    }
+                    else if ((values.indexOf(yourHand[2].Value)) > (values.indexOf(opponentHand[2].Value))) {
+                        opponentFold();
+                        alert('You have won the hand by high card.');
+                        gameState = 0;
+                        break;
+                    }
+                    else if ((values.indexOf(yourHand[1].Value)) > (values.indexOf(opponentHand[1].Value))) {
+                        opponentFold();
+                        alert('You have won the hand by high card.');
+                        gameState = 0;
+                        break;
+                    }
+                    else if ((values.indexOf(yourHand[0].Value)) > (values.indexOf(opponentHand[0].Value))) {
+                        opponentFold();
+                        alert('You have won the hand by high card.');
+                        gameState = 0;
+                        break;
+                    }
+                    else {
+                        youFold();
+                        alert('The opponent has won the hand by high card.');
+                        gameState = 0;
+                        break;
+
+                    }
+        
+    } // Switch statement brace, line 251
+     
+} // For loop switch statement brace, line 242
+
+
